@@ -1,0 +1,62 @@
+
+#interface_font
+{
+    font-family:corbel;
+    font-size:28px;
+    color:white;
+}
+
+#box_ss
+{
+    font-family:corbel;
+    font-size:24px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius:15px;
+    border-style:outset;
+    border-width:1px;
+    border-color:white;
+}
+
+
+#attributesBox
+{
+    font-family:corbel;
+    font-size:24px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius:15px;
+    border-style:outset;
+    border-width:1px;
+    border-color:white;
+}
+
+#menu_bar
+{
+    font-size:18px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#fileMenu_bar
+{
+    font-size:16px;
+}
+
+#effect_font
+{
+    font-family:corbel;
+    font-size:22px;
+    font:bold;
+    color:white;
+}
+#effect_box
+{
+    font-family:corbel;
+    font-size:20px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0);
+    border-width:1px;
+    border-color:white;
+
+}

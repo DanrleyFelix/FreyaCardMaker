@@ -1,0 +1,14 @@
+{
+    "card_name_font": "Whitney-SemiboldItalicSC.ttf",
+    "card_name_size": 25,
+    "card_id_font": "FreeSerifBold.ttf",
+    "card_id_size": 20,
+    "card_points_font": "FreeSerifBold.ttf",
+    "card_points_size": 23,
+    "Card_effect_font": "source-sans-pro.light-italic.ttf",
+    "Card_effect_size": 18,
+    "Card_mp_font": "source-sans-pro.light-italic.ttf",
+    "Card_mp_size": 18,
+    "Card_race_font": "source-sans-pro.light-italic.ttf",
+    "Card_race_size": 15
+}
