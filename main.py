@@ -6,6 +6,8 @@ from utils import *
 from style import *
 from json_manager import JsonManager
 from os.path import basename
+from os import startfile
+from images import Card
 
 
 jmanager = JsonManager()
@@ -21,25 +23,29 @@ class Window(QMainWindow):
         self.height = 800
         self.title = "Freya Card Maker"
         stylesheet = ""
-        self.dialogUploadIsFromWeb = False
         self.lastEditionJson = jmanager.readJson('presets//last_edition.json')
         self.dirJson = jmanager.readJson('data//data.json')
+        self.dialogUploadIsFromWeb = bool(int(self.dirJson['upload_web']))
         self.imageDir = ''
         self.imageFormats = ['.png','.gif','.jpeg']
         self.box_list = []
-        self.imgPreset = 'interface//temp.gif'
+        self.imgPreset = f'interface//temp.png'
         with open("design.qss", "r") as f:
             stylesheet = f.read()
         self.interface = QLabel(self)
         interface_backgropund = QtGui.QPixmap('interface//background.png')
         self.interface.setPixmap(interface_backgropund)
         self.interface.resize(1080,800)
-        label_img = QLabel(self)
-        label_img.move(700,100)
-        label_img.resize(370,520)
-        self.movie = QtGui.QMovie(self.imgPreset)
-        label_img.setMovie(self.movie)
-        self.movie.start()
+        self.labelCardImg = QLabel(self)
+        self.labelCardImg.move(700,100)
+        self.labelCardImg.resize(370,520)
+        if 'gif' in self.imgPreset:
+            self.movie = QtGui.QMovie(self.imgPreset)
+            self.labelCardImg.setMovie(self.movie)
+            self.movie.start()
+        else:
+            pngImage = QtGui.QPixmap(self.imgPreset)
+            self.labelCardImg.setPixmap(pngImage)
         ld = label_distance(100,800,70)
         self.create_label([50,ld[0]],'interface_font',[100,30],'Name:')
         self.create_label([50,ld[1]],'interface_font',[125,30],'Attribute:')
@@ -62,7 +68,7 @@ class Window(QMainWindow):
         self.mpBox = self.create_comboBox([300,ld[7]],[100,40],'box_ss',mp)
         self.cardPointsBox = self.create_comboBox([300,ld[8]],[100,40],'box_ss',card_points)
         self.idBox = self.create_textBox([300,ld[9]],[100,40],'box_ss')
-        self.effectBox = self.create_comboBox([705,630],[200,30],'effect_box',['Effect:','Pack:','Description:'],alignCenter=False)
+        self.effectBox = self.create_comboBox([705,630],[145,35],'effect_box',['Effect: ','Pack: ','Description: '],alignCenter=False)
         self.effectBox1 = self.create_textBox([710,675],[350,40],'effect_box',alignCenter=False)
         self.effectBox2 = self.create_textBox([710,740],[350,40],'effect_box',alignCenter=False)
 
@@ -147,7 +153,8 @@ class Window(QMainWindow):
         return self.button
 
     def load_menu(self):
-    
+
+        checkIcon = QtGui.QIcon('icons//check.png')
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         configMenu = menubar.addMenu('&Config')
@@ -156,9 +163,12 @@ class Window(QMainWindow):
         saveAction = QtWidgets.QAction(QtGui.QIcon('icons//save.png'),'&Save', self)
         generateAction = QtWidgets.QAction('&Generate card', self)
         helpAction = QtWidgets.QAction('&Help', self)
-        self.fileFromPC = QtWidgets.QAction(QtGui.QIcon('icons//check.png'),'&Upload image from PC', self)
+        self.fileFromPC = QtWidgets.QAction('&Upload image from PC', self)
         self.fileFromWeb = QtWidgets.QAction('&Upload image from Web', self)
-
+        if self.dialogUploadIsFromWeb:
+            self.fileFromWeb.setIcon(checkIcon)
+        else:
+            self.fileFromPC.setIcon(checkIcon)
         loadAction.setShortcut('Ctrl+L')
         saveAction.setShortcut('Ctrl+S')
         generateAction.setShortcut('Ctrl+G')
@@ -175,6 +185,7 @@ class Window(QMainWindow):
 
         loadAction.triggered.connect(self.loadFile)
         saveAction.triggered.connect(self.saveFile)
+        helpAction.triggered.connect(self.openHelpDialog)
         generateAction.triggered.connect(self.saveImage)
         self.fileFromWeb.triggered.connect(self.changeModeWeb)
         self.fileFromPC.triggered.connect(self.changeModePc)
@@ -219,18 +230,21 @@ class Window(QMainWindow):
 
     def loadImage(self):
 
-        if len(self.dirJson["dir_upload_image"]) == 0:
-            dir = f'{QtCore.QDir.currentPath()}'
+        if self.dialogUploadIsFromWeb:
+            self.showDialogWebMode()
         else:
-            dir = self.dirJson["dir_upload_image"]
-        response = QtWidgets.QFileDialog.getOpenFileName(
-            parent=self,
-            caption='Load file',
-            directory=dir,
-            filter='Images (*.png;*.jpg;*.gif)')
-        if response[0]:
-            self.dirJson["dir_upload_image"] = response[0]
-            self.imageDir = response[0]
+            if len(self.dirJson["dir_upload_image"]) == 0:
+                dir = f'{QtCore.QDir.currentPath()}'
+            else:
+                dir = self.dirJson["dir_upload_image"]
+            response = QtWidgets.QFileDialog.getOpenFileName(
+                parent=self,
+                caption='Load file',
+                directory=dir,
+                filter='Images (*.png;*.jpg;*.gif)')
+            if response[0]:
+                self.dirJson["dir_upload_image"] = response[0]
+                self.imageDir = response[0]
         self.savePreset(self.box_list)
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
@@ -252,6 +266,9 @@ class Window(QMainWindow):
             filter='Images (*.png;*.jpg;*.gif)')
         if response[0]:
             self.dirJson["dir_save_image"] = response[0]
+            card = Card()
+            card.uploadImages()
+            card.saveImage(response[0])
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def clickButton(self):
@@ -289,6 +306,11 @@ class Window(QMainWindow):
             i+=1
         self.lastEditionJson['Image'] = self.imageDir
         jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
+        card = Card()
+        card.uploadImages()
+        card.saveImage(f'interface//temp.png')
+        pngImage = QtGui.QPixmap(self.imgPreset)
+        self.labelCardImg.setPixmap(pngImage)
 
     def changeModePc(self):
 
@@ -297,6 +319,8 @@ class Window(QMainWindow):
         self.fileFromPC.setIcon(icon)
         self.fileFromWeb.setIcon(noneIcon)
         self.dialogUploadIsFromWeb = False
+        self.dirJson['upload_web'] = "0"
+        jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def changeModeWeb(self):
 
@@ -305,7 +329,21 @@ class Window(QMainWindow):
         self.fileFromWeb.setIcon(icon)
         self.fileFromPC.setIcon(noneIcon)
         self.dialogUploadIsFromWeb = True
+        self.dirJson['upload_web'] = "1"
+        jmanager.updateJson('data//data.json', data=self.dirJson)
 
+    def showDialogWebMode(self):
+        text,check = QtWidgets.QInputDialog.getText(self, 'Upload','Image URL:',flags=QtCore.Qt.WindowCloseButtonHint)
+
+        if check:
+            self.imageDir = text
+            self.lastEditionJson['Image'] = self.imageDir
+            jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
+
+    def openHelpDialog(self):
+
+        startfile("index\help.html")
+    
 def runApp():
 
     app = QApplication(sys.argv)
