@@ -15,7 +15,7 @@ class Card:
         # Inicializando os parâmetros da carta
         self.name = cardDict['Name'][:20]
         self.attribute = cardDict['Attribute']
-        self.race = cardDict['Race/Class']
+        self.race = cardDict['Race/Class'][:20]
         self.rating = cardDict['Rating']
         self.rank = cardDict['Rank']
         self.image = cardDict['Image']
@@ -99,7 +99,7 @@ class Card:
         self.im = self.im.crop((crops_x[0],crops_y[0],crops_x[1],crops_y[1]))
         x_using, y_using= self.im.size
         if x_using>= self.xLimSize or y_using>= self.yLimSize:
-            delta_x =self. xLimSize
+            delta_x = self. xLimSize
             delta_y = self.yLimSize
             limit_sup_x, limit_sup_y = self.im.size
             if x_using> self.xLimSize or y_using> self.yLimSize:
