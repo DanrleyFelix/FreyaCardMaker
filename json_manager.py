@@ -8,7 +8,8 @@ dir_1 = {
   "dir_save_file": "",
   "dir_upload_image": "",
   "dir_save_image": "",
-  "upload_web":"0"
+  "upload_web":"0",
+  "last_show_image":"temp.png"
 
 }
 

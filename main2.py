@@ -1,10 +1,9 @@
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QSlider, QPushButton, 
-QMainWindow, QAction, qApp, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, 
-QSizePolicy, QScrollArea, QLayout, QComboBox)
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, 
+QMainWindow, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QScrollArea, QComboBox)
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
-from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtCore import QRect,Qt
 from utils import *
 from style import *
 from json_manager import JsonManager
@@ -24,7 +23,11 @@ class Window(QMainWindow):
         self.top = 0
         self.left = 0
         self.width = 1080
-        self.height = 800
+        self.height = 833
+        self.setMaximumWidth(1080)
+        self.setMinimumWidth(833)
+        self.setMaximumHeight(833)
+        self.setMinimumHeight(600)
         self.title = "Freya Card Maker"
         stylesheet = ""
         self.lastEditionJson = jmanager.readJson('presets//last_edition.json')
@@ -34,7 +37,7 @@ class Window(QMainWindow):
         self.imageFormats = ['.png','.gif','.jpeg']
         self.box_list = []
         self.label_list = []
-        self.imgPreset = f'interface//temp.png'
+        self.imgPreset = f"interface//{self.dirJson['last_show_image']}"
         with open("design.qss", "r") as f:
             stylesheet = f.read()
         self.setStyleSheet(stylesheet)
@@ -55,20 +58,19 @@ class Window(QMainWindow):
         
         layout = QVBoxLayout()
         self.scrollArea = QScrollArea()
-        self.scrollArea.setGeometry(QRect(0, 0, 1080,800))
         self.setCentralWidget(self.scrollArea)
-        #self.scrollArea.setWidgetResizable(True)
-        self.widget = QWidget()
+        self.scrollArea.setWidgetResizable(False)
+        self.widget = QWidget(self.scrollArea)
         self.widget.setGeometry(QRect(0,0,1080,800))
         self.loadInterface(self.widget)
         self.scrollArea.setWidget(self.widget)
         layout.addWidget(self.widget)
         self.scrollLayout = QVBoxLayout(self.widget)
+        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mainLayout = QHBoxLayout()
         self.mainLayout.addLayout(layout)
-        #self.scrollLayout.addLayout(self.mainLayout)
 
-        
     def loadInterface(self,widget):
 
         self.interface = QLabel(widget)
@@ -76,7 +78,7 @@ class Window(QMainWindow):
         self.interface.setPixmap(interface_backgropund)
         self.labelCardImg = QLabel(self.widget)
         self.interface.resize(1080,800)
-        self.labelCardImg.move(700,100)
+        self.labelCardImg.move(675,70)
         self.labelCardImg.resize(370,520)
         if 'gif' in self.imgPreset:
             self.movie = QtGui.QMovie(self.imgPreset)
@@ -86,7 +88,7 @@ class Window(QMainWindow):
             pngImage = QtGui.QPixmap(self.imgPreset)
             self.labelCardImg.setPixmap(pngImage)
                 # Labels
-        ld = label_distance(100,800,70)
+        ld = label_distance(70,800,70)
         self.create_label([50,ld[0]],'interface_font',[100,30],'Name:')
         self.create_label([50,ld[1]],'interface_font',[125,30],'Attribute:')
         self.create_label([50,ld[2]],'interface_font',[200,30],'Race/Class:')
@@ -97,22 +99,22 @@ class Window(QMainWindow):
         self.create_label([50,ld[7]],'interface_font',[100,30],'MP:')
         self.create_label([50,ld[8]],'interface_font',[165,30],'Card Points:')
         self.create_label([50,ld[9]],'interface_font',[100,30],'ID:')
+        x_distance = 285
+        self.nameBox = self.create_textBox([x_distance,ld[0]],[300,40],'box_ss')
+        self.attributesBox = self.create_comboBox([x_distance,ld[1]],[300,40],'attributesBox',attributes,icons=icons_attributes)
+        self.racesBox = self.create_comboBox([x_distance,ld[2]],[300,40],'box_ss',races,readOnly=False)
+        self.ratingsBox = self.create_comboBox([x_distance,ld[3]],[300,40],'box_ss',ratings)
+        self.ranksBox = self.create_comboBox([x_distance,ld[4]],[100,40],'box_ss',ranks)
+        self.uploadBox = self.create_button([x_distance,ld[5]],[160,40],buttons,' Upload',icon='icons//upload.png',fileOpen=True)
+        self.backgroundsBox = self.create_comboBox([x_distance,ld[6]],[300,40],'box_ss',backgrounds)
+        self.mpBox = self.create_comboBox([x_distance,ld[7]],[100,40],'box_ss',mp)
+        self.cardPointsBox = self.create_comboBox([x_distance,ld[8]],[100,40],'box_ss',card_points)
+        self.idBox = self.create_textBox([x_distance,ld[9]],[100,40],'box_ss')
+        self.effectBox = self.create_comboBox([680,600],[145,35],'effect_box',['Effect: ','Pack: ','Description: '],alignCenter=False)
+        self.effectBox1 = self.create_textBox([685,645],[350,40],'effect_box',alignCenter=False)
+        self.effectBox2 = self.create_textBox([685,710],[350,40],'effect_box',alignCenter=False)
 
-        self.nameBox = self.create_textBox([300,ld[0]],[300,40],'box_ss')
-        self.attributesBox = self.create_comboBox([300,ld[1]],[300,40],'attributesBox',attributes,icons=icons_attributes)
-        self.racesBox = self.create_comboBox([300,ld[2]],[300,40],'box_ss',races,readOnly=False)
-        self.ratingsBox = self.create_comboBox([300,ld[3]],[300,40],'box_ss',ratings)
-        self.ranksBox = self.create_comboBox([300,ld[4]],[100,40],'box_ss',ranks)
-        self.uploadBox = self.create_button([300,ld[5]],[160,40],buttons,' Upload',icon='icons//upload.png',fileOpen=True)
-        self.backgroundsBox = self.create_comboBox([300,ld[6]],[300,40],'box_ss',backgrounds)
-        self.mpBox = self.create_comboBox([300,ld[7]],[100,40],'box_ss',mp)
-        self.cardPointsBox = self.create_comboBox([300,ld[8]],[100,40],'box_ss',card_points)
-        self.idBox = self.create_textBox([300,ld[9]],[100,40],'box_ss')
-        self.effectBox = self.create_comboBox([705,630],[145,35],'effect_box',['Effect: ','Pack: ','Description: '],alignCenter=False)
-        self.effectBox1 = self.create_textBox([710,675],[350,40],'effect_box',alignCenter=False)
-        self.effectBox2 = self.create_textBox([710,740],[350,40],'effect_box',alignCenter=False)
-
-        self.create_button([795,45],[180,40],buttons,'Show card')
+        self.create_button([775,15],[180,40],buttons,'Show card')
         self.effectBox1.setTextMargins(10,0,0,0)
         self.effectBox2.setTextMargins(10,0,0,0)
 

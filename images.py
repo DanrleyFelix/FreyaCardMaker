@@ -12,6 +12,7 @@ class Card:
 
         cardDict = jmanager.readJson('presets//last_edition.json')
         fontsDict = jmanager.readJson('fonts//card_fonts.json')
+        self.dirJson = jmanager.readJson('data//data.json')
         # Inicializando os parâmetros da carta
         self.name = cardDict['Name'][:20]
         self.attribute = cardDict['Attribute']
@@ -218,4 +219,9 @@ class Card:
 
     def saveImage(self,dir):
 
+        if '.png' in dir:
+            self.dirJson['last_show_image'] = 'temp.png'
+        elif '.gif' in dir:
+            self.dirJson['last_show_image'] = 'temp.gif'
+        jmanager.updateJson('data//data.json', self.dirJson)
         self.backgroundCardImage.save(dir)
