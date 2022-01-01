@@ -1,10 +1,9 @@
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QSlider, QPushButton, 
-QMainWindow, QAction, qApp, QGridLayout, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, 
-QSizePolicy, QScrollArea, QLayout, QComboBox)
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, 
+QMainWindow, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QScrollArea, QComboBox)
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
-from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtCore import QRect,Qt
 from utils import *
 from style import *
 from json_manager import JsonManager
@@ -20,74 +19,31 @@ class Window(QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
-        self.top = 100
-        self.left = 100
+
+        self.top = 0
+        self.left = 0
         self.width = 1080
-        self.height = 800
+        self.height = 833
+        self.setMaximumWidth(1080)
+        self.setMinimumWidth(833)
+        self.setMaximumHeight(833)
+        self.setMinimumHeight(600)
         self.title = "Freya Card Maker"
         stylesheet = ""
         self.lastEditionJson = jmanager.readJson('presets//last_edition.json')
         self.dirJson = jmanager.readJson('data//data.json')
         self.dialogUploadIsFromWeb = bool(int(self.dirJson['upload_web']))
         self.imageDir = ''
-        self.imageFormats = ['.png','.gif','.jpeg']
+        self.imageFormats = ['.png','.gif']
         self.box_list = []
         self.label_list = []
-        self.imgPreset = f'interface//temp.png'
+        self.imgPreset = f"interface//{self.dirJson['last_show_image']}"
         with open("design.qss", "r") as f:
             stylesheet = f.read()
-   
-        self.interface = QLabel(self)
-        self.interface.resize(1080,800)
-        interface_backgropund = QtGui.QPixmap('interface//background.png')
-        self.interface.setPixmap(interface_backgropund)
-        self.interface.resize(1080,800)
-        self.labelCardImg = QLabel(self)
-        self.labelCardImg.move(700,100)
-        self.labelCardImg.resize(370,520)
-        if 'gif' in self.imgPreset:
-            self.movie = QtGui.QMovie(self.imgPreset)
-            self.labelCardImg.setMovie(self.movie)
-            self.movie.start()
-        else:
-            pngImage = QtGui.QPixmap(self.imgPreset)
-            self.labelCardImg.setPixmap(pngImage)
-        # Labels
-        ld = label_distance(100,800,70)
-        self.create_label([50,ld[0]],'interface_font',[100,30],'Name:')
-        self.create_label([50,ld[1]],'interface_font',[125,30],'Attribute:')
-        self.create_label([50,ld[2]],'interface_font',[200,30],'Race/Class:')
-        self.create_label([50,ld[3]],'interface_font',[125,30],'Rating:')
-        self.create_label([50,ld[4]],'interface_font',[100,30],'Rank:')
-        self.create_label([50,ld[5]],'interface_font',[110,30],'Image:')
-        self.create_label([50,ld[6]],'interface_font',[165,30],'Background:')
-        self.create_label([50,ld[7]],'interface_font',[100,30],'MP:')
-        self.create_label([50,ld[8]],'interface_font',[165,30],'Card Points:')
-        self.create_label([50,ld[9]],'interface_font',[100,30],'ID:')
-
-        self.nameBox = self.create_textBox([300,ld[0]],[300,40],'box_ss')
-        self.attributesBox = self.create_comboBox([300,ld[1]],[300,40],'attributesBox',attributes,icons=icons_attributes)
-        self.racesBox = self.create_comboBox([300,ld[2]],[300,40],'box_ss',races,readOnly=False)
-        self.ratingsBox = self.create_comboBox([300,ld[3]],[300,40],'box_ss',ratings)
-        self.ranksBox = self.create_comboBox([300,ld[4]],[100,40],'box_ss',ranks)
-        self.uploadBox = self.create_button([300,ld[5]],[160,40],buttons,' Upload',icon='icons//upload.png',fileOpen=True)
-        self.backgroundsBox = self.create_comboBox([300,ld[6]],[300,40],'box_ss',backgrounds)
-        self.mpBox = self.create_comboBox([300,ld[7]],[100,40],'box_ss',mp)
-        self.cardPointsBox = self.create_comboBox([300,ld[8]],[100,40],'box_ss',card_points)
-        self.idBox = self.create_textBox([300,ld[9]],[100,40],'box_ss')
-        self.effectBox = self.create_comboBox([705,630],[145,35],'effect_box',['Effect: ','Pack: ','Description: '],alignCenter=False)
-        self.effectBox1 = self.create_textBox([710,675],[350,40],'effect_box',alignCenter=False)
-        self.effectBox2 = self.create_textBox([710,740],[350,40],'effect_box',alignCenter=False)
-
-        self.create_button([795,45],[180,40],buttons,'Show card')
-        self.effectBox1.setTextMargins(10,0,0,0)
-        self.effectBox2.setTextMargins(10,0,0,0)
-        self.box_list.extend((self.nameBox,self.attributesBox,self.racesBox,self.ratingsBox,self.ranksBox,self.uploadBox,
-                        self.backgroundsBox,self.mpBox,self.cardPointsBox,self.idBox,self.effectBox,self.effectBox1,self.effectBox2))
         self.setStyleSheet(stylesheet)
+        self.loadScrollArea()
         self.loadPreset(self.box_list)
         self.load_menu()
-        self.loadScrollArea()
         self.load_window()
         
     def load_window(self):
@@ -100,35 +56,65 @@ class Window(QMainWindow):
 
     def loadScrollArea(self):
         
-        style = '''
-                background: transparent;
-                background-image: url(interface//background.png);
-                color: white;
-        '''
-        # size = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-
+        layout = QVBoxLayout()
         self.scrollArea = QScrollArea()
-        self.mainLayout = QHBoxLayout()
-        # set CentralWidget
         self.setCentralWidget(self.scrollArea)
-        self.scrollArea.setWidgetResizable(True)
-        self.widget = QWidget()
-        self.widget.setGeometry(QRect(0, 0, 1080, 800))
-        self.widget.setStyleSheet(style) 
-        self.scrollArea.setWidget()
-        #self.widget.setStyleSheet(style)
-        #self.scrollLayout = QVBoxLayout(self.widget)
-        #self.scrollLayout.setSizeConstraint(QLayout.SetMinimumSize) #2
-        
-        #self.mainLayout.addWidget(self.scrollArea)
-        self.mainLayout.addWidget(self.labelCardImg)
-        self.scrollLayout.addLayout(self.mainLayout)
-        
+        self.scrollArea.setWidgetResizable(False)
+        self.widget = QWidget(self.scrollArea)
+        self.widget.setGeometry(QRect(0,0,1080,800))
+        self.loadInterface(self.widget)
+        self.scrollArea.setWidget(self.widget)
+        layout.addWidget(self.widget)
+        self.scrollLayout = QVBoxLayout(self.widget)
+        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mainLayout = QHBoxLayout()
+        self.mainLayout.addLayout(layout)
 
+    def loadInterface(self,widget):
+
+        self.interface = QLabel(widget)
+        interface_backgropund = QtGui.QPixmap('interface//background.png')
+        self.interface.setPixmap(interface_backgropund)
+        self.labelCardImg = QLabel(self.widget)
+        self.interface.resize(1080,800)
+        self.labelCardImg.move(675,70)
+        self.labelCardImg.resize(370,520)
+        self.loadCardLabel()
+        # Labels
+        ld = label_distance(70,800,70)
+        self.create_label([50,ld[0]],'interface_font',[100,30],'Name:')
+        self.create_label([50,ld[1]],'interface_font',[125,30],'Attribute:')
+        self.create_label([50,ld[2]],'interface_font',[200,30],'Race/Class:')
+        self.create_label([50,ld[3]],'interface_font',[125,30],'Rating:')
+        self.create_label([50,ld[4]],'interface_font',[100,30],'Rank:')
+        self.create_label([50,ld[5]],'interface_font',[110,30],'Image:')
+        self.create_label([50,ld[6]],'interface_font',[165,30],'Background:')
+        self.create_label([50,ld[7]],'interface_font',[100,30],'MP:')
+        self.create_label([50,ld[8]],'interface_font',[165,30],'Card Points:')
+        self.create_label([50,ld[9]],'interface_font',[100,30],'ID:')
+        x_distance = 285
+        self.nameBox = self.create_textBox([x_distance,ld[0]],[300,40],'box_ss')
+        self.attributesBox = self.create_comboBox([x_distance,ld[1]],[300,40],'attributesBox',attributes,icons=icons_attributes)
+        self.racesBox = self.create_comboBox([x_distance,ld[2]],[300,40],'box_ss',races,readOnly=False)
+        self.ratingsBox = self.create_comboBox([x_distance,ld[3]],[300,40],'box_ss',ratings)
+        self.ranksBox = self.create_comboBox([x_distance,ld[4]],[100,40],'box_ss',ranks)
+        self.uploadBox = self.create_button([x_distance,ld[5]],[160,40],buttons,' Upload',icon='icons//upload.png',fileOpen=True)
+        self.backgroundsBox = self.create_comboBox([x_distance,ld[6]],[300,40],'box_ss',backgrounds)
+        self.mpBox = self.create_comboBox([x_distance,ld[7]],[100,40],'box_ss',mp)
+        self.cardPointsBox = self.create_comboBox([x_distance,ld[8]],[100,40],'box_ss',card_points)
+        self.idBox = self.create_textBox([x_distance,ld[9]],[100,40],'box_ss')
+        self.effectBox = self.create_comboBox([680,600],[145,35],'effect_box2',['Effect: ','Pack: ','Description: '],alignCenter=False)
+        self.effectBox1 = self.create_textBox([685,645],[350,40],'effect_box',alignCenter=False)
+        self.effectBox2 = self.create_textBox([685,710],[350,40],'effect_box',alignCenter=False)
+
+        self.create_button([775,15],[180,40],buttons,'Show card')
+        self.effectBox1.setTextMargins(10,0,0,0)
+        self.effectBox2.setTextMargins(10,0,0,0)
 
     def create_label(self,pos:list,ss:str,dim:list,text:str):
 
-        label = QLabel(self)
+        label = QLabel(self.widget)
         if text is not None:
             label.setText(text)
         label.move(pos[0],pos[1])
@@ -139,18 +125,19 @@ class Window(QMainWindow):
 
     def create_textBox(self,pos:list,dim:list,ss:str,alignCenter=True):
 
-        textBox = QLineEdit(self)
+        textBox = QLineEdit(self.widget)
         if ss is not None:
             textBox.setObjectName(ss)
         textBox.move(pos[0],pos[1])
         textBox.resize(dim[0],dim[1])
         if alignCenter:
             textBox.setAlignment(QtCore.Qt.AlignCenter)
+        self.box_list.append(textBox)
         return textBox
     
     def create_comboBox(self,pos:list,dim:list,ss:str,items:list,readOnly=True,icons=None,alignCenter=True):
 
-        comboBox = QComboBox(self)
+        comboBox = QComboBox(self.widget)
         comboBox.setEditable(True)
         comboBox.setStyleSheet(down_arrow)
         if ss is not None:
@@ -172,11 +159,12 @@ class Window(QMainWindow):
             comboBox.lineEdit().setAlignment(QtCore.Qt.AlignCenter)
         comboBox.lineEdit().setReadOnly(readOnly)
         comboBox.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.box_list.append(comboBox)
         return comboBox
 
     def create_button(self,pos:list,dim:list,ss:str,text:str,icon=None,fileOpen=False):
 
-        self.button = QPushButton(text.strip(),self)
+        self.button = QPushButton(text.strip(),self.widget)
         self.button.setStyleSheet(ss)
         self.button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.button.move(pos[0],pos[1])
@@ -187,6 +175,8 @@ class Window(QMainWindow):
         if fileOpen:
             self.button.clicked.connect(self.loadImage)
         self.button.clicked.connect(self.clickButton)
+        if 'upload' in text.lower():
+            self.box_list.append(self.button)
         return self.button
 
     def load_menu(self):
@@ -247,6 +237,18 @@ class Window(QMainWindow):
             self.lastEditionJson = jmanager.readJson(response[0])
             self.loadPreset(self.box_list)
 
+    def loadCardLabel(self):
+        
+        self.dirJson = jmanager.readJson('data//data.json')
+        self.imgPreset = f"interface//{self.dirJson['last_show_image']}"
+        if 'gif' in self.imgPreset:
+            self.movie = QtGui.QMovie(self.imgPreset)
+            self.labelCardImg.setMovie(self.movie)
+            self.movie.start()
+        else:
+            pngImage = QtGui.QPixmap(self.imgPreset)
+            self.labelCardImg.setPixmap(pngImage)
+
     def saveFile(self):
         
         if len(self.dirJson["dir_save_file"]) == 0:
@@ -267,6 +269,11 @@ class Window(QMainWindow):
 
     def loadImage(self):
 
+        card = Card()
+        if card.totalFrames > 1:
+            self.dirJson["last_show_image"] = 'temp.gif'
+        else:
+            self.dirJson["last_show_image"] = 'temp.png'
         if self.dialogUploadIsFromWeb:
             self.showDialogWebMode()
         else:
@@ -298,9 +305,9 @@ class Window(QMainWindow):
         newDir = f'{dir.replace(basename(dir),"")}{self.idBox.text()} - {self.nameBox.text()}{imgFormat}'
         response = QtWidgets.QFileDialog.getSaveFileName(
             parent=self,
-            caption='Save file',
+            caption='Save Image',
             directory=newDir,
-            filter='Images (*.png;*.jpg;*.gif)')
+            filter='Images (*.png;*.gif)')
         if response[0]:
             self.dirJson["dir_save_image"] = response[0]
             card = Card()
@@ -345,9 +352,8 @@ class Window(QMainWindow):
         jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
         card = Card()
         card.uploadImages()
-        card.saveImage(f'interface//temp.png')
-        pngImage = QtGui.QPixmap(self.imgPreset)
-        self.labelCardImg.setPixmap(pngImage)
+        card.saveImage(f'interface//{self.dirJson["last_show_image"]}')
+        self.loadCardLabel()
 
     def changeModePc(self):
 

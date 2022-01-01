@@ -56,10 +56,18 @@
     font-size:20px;
     color:white;
     background-color: rgba(0, 0, 0, 0);
+    border-style:outset;
     border-width:1px;
     border-color:white;
-
 }
+#effect_box2
+{
+    font-family:corbel;
+    font-size:20px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0);
+}
+
 #main_layout
 {
     background-image: url(interface//background.png);
