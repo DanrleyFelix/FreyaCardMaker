@@ -1,8 +1,8 @@
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, 
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton,QMessageBox,
 QMainWindow, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QScrollArea, QComboBox)
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QMovie
 from PyQt5.QtCore import QRect,Qt
 from utils import *
 from style import *
@@ -30,9 +30,12 @@ class Window(QMainWindow):
         self.setMinimumHeight(600)
         self.title = "Freya Card Maker"
         stylesheet = ""
+        self.checkIcon = QtGui.QIcon('icons//check.png')
+        self.noneIcon = QtGui.QIcon('')
         self.lastEditionJson = jmanager.readJson('presets//last_edition.json')
         self.dirJson = jmanager.readJson('data//data.json')
         self.dialogUploadIsFromWeb = bool(int(self.dirJson['upload_web']))
+        self.previewImageQualityIsHigh = bool(int(self.dirJson['high_quality_preview']))
         self.imageDir = ''
         self.imageFormats = ['.png','.gif']
         self.box_list = []
@@ -43,7 +46,7 @@ class Window(QMainWindow):
         self.setStyleSheet(stylesheet)
         self.loadScrollArea()
         self.loadPreset(self.box_list)
-        self.load_menu()
+        self.loadMenu()
         self.load_window()
         
     def load_window(self):
@@ -52,7 +55,6 @@ class Window(QMainWindow):
         self.setWindowTitle(self.title)
         self.setWindowIcon(QtGui.QIcon('icons//freyalogo.png'))
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
-        self.show()
 
     def loadScrollArea(self):
         
@@ -174,14 +176,14 @@ class Window(QMainWindow):
             self.button.setIcon(QtGui.QIcon(icon))
         if fileOpen:
             self.button.clicked.connect(self.loadImage)
-        self.button.clicked.connect(self.clickButton)
+        else:
+            self.button.clicked.connect(self.clickButton)
         if 'upload' in text.lower():
             self.box_list.append(self.button)
         return self.button
 
-    def load_menu(self):
+    def loadMenu(self):
 
-        checkIcon = QtGui.QIcon('icons//check.png')
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         configMenu = menubar.addMenu('&Config')
@@ -192,16 +194,25 @@ class Window(QMainWindow):
         helpAction = QtWidgets.QAction('&Help', self)
         self.fileFromPC = QtWidgets.QAction('&Upload image from PC', self)
         self.fileFromWeb = QtWidgets.QAction('&Upload image from Web', self)
+        self.showImageLow = QtWidgets.QAction('&Show gifs in low quality', self)
+        self.showImageHigh = QtWidgets.QAction('&Show gifs in high quality', self)
+        self.onlySpace = QtWidgets.QAction('-----------------------------', self)
         if self.dialogUploadIsFromWeb:
-            self.fileFromWeb.setIcon(checkIcon)
+            self.fileFromWeb.setIcon(self.checkIcon)
         else:
-            self.fileFromPC.setIcon(checkIcon)
-        loadAction.setShortcut('Ctrl+L')
+            self.fileFromPC.setIcon(self.checkIcon)
+        if self.previewImageQualityIsHigh:
+            self.showImageHigh.setIcon(self.checkIcon)
+        else:
+            self.showImageLow.setIcon(self.checkIcon)
+        loadAction.setShortcut('Ctrl+O')
         saveAction.setShortcut('Ctrl+S')
         generateAction.setShortcut('Ctrl+G')
         helpAction.setShortcut('Ctrl+H')
         self.fileFromPC.setShortcut('Ctrl+P')
         self.fileFromWeb.setShortcut('Ctrl+W')
+        self.showImageLow.setShortcut('Ctrl+L')
+        self.showImageHigh.setShortcut('Ctrl+K')
 
         fileMenu.addAction(saveAction)
         fileMenu.addAction(loadAction)
@@ -209,6 +220,9 @@ class Window(QMainWindow):
         menubar.addAction(helpAction)
         configMenu.addAction(self.fileFromPC)
         configMenu.addAction(self.fileFromWeb)
+        configMenu.addAction(self.onlySpace)
+        configMenu.addAction(self.showImageHigh)
+        configMenu.addAction(self.showImageLow)
 
         loadAction.triggered.connect(self.loadFile)
         saveAction.triggered.connect(self.saveFile)
@@ -216,6 +230,8 @@ class Window(QMainWindow):
         generateAction.triggered.connect(self.saveImage)
         self.fileFromWeb.triggered.connect(self.changeModeWeb)
         self.fileFromPC.triggered.connect(self.changeModePc)
+        self.showImageLow.triggered.connect(self.changeModeLow)
+        self.showImageHigh.triggered.connect(self.changeModeHigh)
 
         self.styleSheet = Qmenu
         menubar.setStyleSheet(self.styleSheet)
@@ -263,7 +279,7 @@ class Window(QMainWindow):
             filter='Data file (*.json)')
         if response[0]:
             self.dirJson["dir_save_file"] = response[0]
-            self.savePreset(self.box_list)
+            self.savePreset(self.box_list,onlyFile=True)
             jmanager.createJson(response[0], self.lastEditionJson)
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
@@ -272,7 +288,7 @@ class Window(QMainWindow):
         card = Card()
         if card.totalFrames > 1:
             self.dirJson["last_show_image"] = 'temp.gif'
-        else:
+        elif card.totalFrames == 1:
             self.dirJson["last_show_image"] = 'temp.png'
         if self.dialogUploadIsFromWeb:
             self.showDialogWebMode()
@@ -289,7 +305,7 @@ class Window(QMainWindow):
             if response[0]:
                 self.dirJson["dir_upload_image"] = response[0]
                 self.imageDir = response[0]
-        self.savePreset(self.box_list)
+        self.savePreset(self.box_list, onlyFile=True)
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def saveImage(self):
@@ -310,10 +326,23 @@ class Window(QMainWindow):
             filter='Images (*.png;*.gif)')
         if response[0]:
             self.dirJson["dir_save_image"] = response[0]
-            card = Card()
-            card.uploadImages()
-            card.saveImage(response[0])
+            try:
+                card = Card()
+                card.uploadImages()
+                card.saveImage(response[0])
+            except:
+                self.show_critical_messagebox()
         jmanager.updateJson('data//data.json', data=self.dirJson)
+
+    def show_critical_messagebox(self):
+
+        msg = QMessageBox()
+        msg.critical(self,'Critical Error','Upload another image.',QMessageBox.Ok) 
+
+    def show_warning_messagebox(self):
+
+        msg = QMessageBox()
+        msg.warning(self,'Warning','The gif may take a long time to load the preview.',QMessageBox.Ok) 
 
     def clickButton(self):
 
@@ -339,7 +368,7 @@ class Window(QMainWindow):
                 self.imageDir = self.lastEditionJson[keys[i]]
             i+=1
     
-    def savePreset(self, boxes:list):
+    def savePreset(self, boxes:list, onlyFile=False):
 
         i = 0
         for key in self.lastEditionJson:
@@ -350,30 +379,48 @@ class Window(QMainWindow):
             i+=1
         self.lastEditionJson['Image'] = self.imageDir
         jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
-        card = Card()
-        card.uploadImages()
-        card.saveImage(f'interface//{self.dirJson["last_show_image"]}')
-        self.loadCardLabel()
+        if not onlyFile:
+            try:
+                card = Card()
+                card.uploadImages()
+                card.saveImageTemp()
+                self.loadCardLabel()
+            except:
+                self.show_critical_messagebox()
 
     def changeModePc(self):
 
-        icon = QtGui.QIcon('icons//check.png')
-        noneIcon = QtGui.QIcon('')
-        self.fileFromPC.setIcon(icon)
-        self.fileFromWeb.setIcon(noneIcon)
+
+        self.fileFromPC.setIcon(self.checkIcon)
+        self.fileFromWeb.setIcon(self.noneIcon)
         self.dialogUploadIsFromWeb = False
         self.dirJson['upload_web'] = "0"
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def changeModeWeb(self):
 
-        noneIcon = QtGui.QIcon('')
-        icon = QtGui.QIcon('icons//check.png')
-        self.fileFromWeb.setIcon(icon)
-        self.fileFromPC.setIcon(noneIcon)
+        self.fileFromWeb.setIcon(self.checkIcon)
+        self.fileFromPC.setIcon(self.noneIcon)
         self.dialogUploadIsFromWeb = True
         self.dirJson['upload_web'] = "1"
         jmanager.updateJson('data//data.json', data=self.dirJson)
+
+    def changeModeLow(self):
+
+        self.showImageLow.setIcon(self.checkIcon)
+        self.showImageHigh.setIcon(self.noneIcon)
+        self.previewImageQualityIsHigh = False
+        self.dirJson['high_quality_preview'] = "0"
+        jmanager.updateJson('data//data.json', data=self.dirJson)
+
+    def changeModeHigh(self):
+
+        self.showImageHigh.setIcon(self.checkIcon)
+        self.showImageLow.setIcon(self.noneIcon)
+        self.previewImageQualityIsHigh = True
+        self.dirJson['high_quality_preview'] = "1"
+        jmanager.updateJson('data//data.json', data=self.dirJson)
+        self.show_warning_messagebox()
 
     def showDialogWebMode(self):
         text,check = QtWidgets.QInputDialog.getText(self, 'Upload','Image URL:',flags=QtCore.Qt.WindowCloseButtonHint)
@@ -386,11 +433,12 @@ class Window(QMainWindow):
     def openHelpDialog(self):
 
         startfile("index\help.html")
-    
+
 def runApp():
 
     app = QApplication(sys.argv)
     window = Window()
+    window.show()
     sys.exit(app.exec())
     
 

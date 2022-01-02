@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageSequence
 import requests
 from io import BytesIO
 from json_manager import JsonManager
+from imageio import mimsave,imread
+from glob import glob
 
 jmanager = JsonManager()
 
@@ -58,6 +60,7 @@ class Card:
         except (OSError,AttributeError):
             self.im = self.imageLink(self.image)
         # Rating, Rank & attribute
+        self.original_duration = self.im.info['duration']
         cardAttribute = Image.open(f'card attributes//{self.attribute.lower()}.png')
         cardRating = Image.open(f'card rating//{self.rating.count("⭐")} stars.png')
         cardRank = Image.open(f'card ranks//{self.rank.lower()}.png')
@@ -240,14 +243,23 @@ class Card:
                         texts.append(txt.strip())
                         return texts
 
+    def saveImageTemp(self):
+
+        print(1/(self.original_duration/1000))
+        if len(self.newImFrames) == 1:
+            self.newImFrames[0].save('interface//temp.png')
+        else:
+            # write GIF animation
+            if int(self.dirJson["high_quality_preview"]) == 1:
+                mimsave('interface//temp.gif', self.newImFrames, fps=1/(self.original_duration/1000))
+            else:
+                self.newImFrames[0].save('interface//temp.gif', save_all=True, optimize=False, 
+                    append_images=self.newImFrames[1:], loop=0, duration=self.original_duration)
+
     def saveImage(self,dir):
 
         if len(self.newImFrames) == 1:
             self.newImFrames[0].save(dir)
-            self.newImFrames[0].save('interface//temp.png')
         else:
-            self.newImFrames[0].save(dir, save_all=True, optimize=True, 
-                append_images=self.newImFrames[1:], loop=0)
-            self.newImFrames[0].save('interface//temp.gif', save_all=True, optimize=True, 
-                append_images=self.newImFrames[1:], loop=0)
-            self.newImFrames[0].save('interface//temp.png')
+            # write GIF animation
+            mimsave(dir,self.newImFrames,fps=1/(self.original_duration/1000))
