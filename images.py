@@ -2,8 +2,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageSequence
 import requests
 from io import BytesIO
 from json_manager import JsonManager
-from imageio import mimsave,imread
-from glob import glob
+from imageio import mimsave
+
 
 jmanager = JsonManager()
 
@@ -21,7 +21,7 @@ class Card:
         # Inicializando os parâmetros da carta
         self.name = cardDict['Name'][:20]
         self.attribute = cardDict['Attribute']
-        self.race = cardDict['Race/Class'][:20]
+        self.race = cardDict['Race/Class'][:10]
         self.rating = cardDict['Rating']
         self.rank = cardDict['Rank']
         self.image = cardDict['Image']
@@ -227,7 +227,7 @@ class Card:
             if w1_test >= 250 or i == maxLenght-1:
                 texts.append(txt)
                 txt = ''
-                new_txt_list = text_list[i:]
+                new_txt_list = text_list[i+1:]
                 maxLenght = len(new_txt_list)
                 for j in range(0, maxLenght):
                     txt = txt + new_txt_list[j] + ' '
@@ -245,13 +245,12 @@ class Card:
 
     def saveImageTemp(self):
 
-        print(1/(self.original_duration/1000))
         if len(self.newImFrames) == 1:
             self.newImFrames[0].save('interface//temp.png')
         else:
             # write GIF animation
             if int(self.dirJson["high_quality_preview"]) == 1:
-                mimsave('interface//temp.gif', self.newImFrames, fps=1/(self.original_duration/1000))
+                mimsave('interface//temp.gif',self.newImFrames,fps=1/(self.original_duration/1000),format='gif')
             else:
                 self.newImFrames[0].save('interface//temp.gif', save_all=True, optimize=False, 
                     append_images=self.newImFrames[1:], loop=0, duration=self.original_duration)
@@ -262,4 +261,8 @@ class Card:
             self.newImFrames[0].save(dir)
         else:
             # write GIF animation
-            mimsave(dir,self.newImFrames,fps=1/(self.original_duration/1000))
+            if int(self.dirJson["high_quality_preview"]) == 1:
+                mimsave(dir,self.newImFrames,fps=1/(self.original_duration/1000),format='gif')
+            else:
+                self.newImFrames[0].save(dir, save_all=True, optimize=False, 
+                    append_images=self.newImFrames[1:], loop=0, duration=self.original_duration)

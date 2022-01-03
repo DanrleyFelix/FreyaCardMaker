@@ -1,0 +1,15 @@
+{
+  "Name": "Ishtar - Archer",
+  "Attribute": "Light",
+  "Race/Class": "Goddess",
+  "Rating": "\u2b50\u2b50\u2b50\u2b50\u2b50",
+  "Rank": "R+",
+  "Image": "https://i.pinimg.com/originals/ab/d3/fc/abd3fc01459f64d8510d6ae48f3e9a6c.gif",
+  "Background": "general-blue 2.png",
+  "MP": "200",
+  "Card Points": "180",
+  "ID": "150",
+  "Effect/Pack/Description 0": "Effect: ",
+  "Effect/Pack/Description 1": "Add 3 ultra boxes. No cooldown.",
+  "Effect/Pack/Description 2": ""
+}

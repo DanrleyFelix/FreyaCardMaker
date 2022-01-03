@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton,QMessageBox,
 QMainWindow, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QScrollArea, QComboBox)
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtGui import QCursor, QMovie
+from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import QRect,Qt
 from utils import *
 from style import *
@@ -13,6 +13,7 @@ from images import Card
 
 
 jmanager = JsonManager()
+app = QApplication(sys.argv)
 
 
 class Window(QMainWindow):
@@ -194,9 +195,9 @@ class Window(QMainWindow):
         helpAction = QtWidgets.QAction('&Help', self)
         self.fileFromPC = QtWidgets.QAction('&Upload image from PC', self)
         self.fileFromWeb = QtWidgets.QAction('&Upload image from Web', self)
-        self.showImageLow = QtWidgets.QAction('&Show gifs in low quality', self)
-        self.showImageHigh = QtWidgets.QAction('&Show gifs in high quality', self)
-        self.onlySpace = QtWidgets.QAction('-----------------------------', self)
+        self.showImageLow = QtWidgets.QAction('&Low quality gif', self)
+        self.showImageHigh = QtWidgets.QAction('&High quality gif', self)
+        self.onlySpace = QtWidgets.QAction('--------------------------', self)
         if self.dialogUploadIsFromWeb:
             self.fileFromWeb.setIcon(self.checkIcon)
         else:
@@ -324,6 +325,7 @@ class Window(QMainWindow):
             caption='Save Image',
             directory=newDir,
             filter='Images (*.png;*.gif)')
+        app.setOverrideCursor(Qt.WaitCursor)
         if response[0]:
             self.dirJson["dir_save_image"] = response[0]
             try:
@@ -332,17 +334,18 @@ class Window(QMainWindow):
                 card.saveImage(response[0])
             except:
                 self.show_critical_messagebox()
+        app.restoreOverrideCursor()
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def show_critical_messagebox(self):
 
         msg = QMessageBox()
         msg.critical(self,'Critical Error','Upload another image.',QMessageBox.Ok) 
-
-    def show_warning_messagebox(self):
+    
+    def show_info_messagebox(self):
 
         msg = QMessageBox()
-        msg.warning(self,'Warning','The gif may take a long time to load the preview.',QMessageBox.Ok) 
+        msg.information(self,'Information','The gif will take a long time to load the preview. Colors may be grayer.',QMessageBox.Ok) 
 
     def clickButton(self):
 
@@ -379,14 +382,17 @@ class Window(QMainWindow):
             i+=1
         self.lastEditionJson['Image'] = self.imageDir
         jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
+        app.setOverrideCursor(Qt.WaitCursor)
         if not onlyFile:
             try:
                 card = Card()
                 card.uploadImages()
                 card.saveImageTemp()
                 self.loadCardLabel()
-            except:
+            except Exception as e:
+                print(e)
                 self.show_critical_messagebox()
+        app.restoreOverrideCursor()
 
     def changeModePc(self):
 
@@ -420,7 +426,7 @@ class Window(QMainWindow):
         self.previewImageQualityIsHigh = True
         self.dirJson['high_quality_preview'] = "1"
         jmanager.updateJson('data//data.json', data=self.dirJson)
-        self.show_warning_messagebox()
+        self.show_info_messagebox()
 
     def showDialogWebMode(self):
         text,check = QtWidgets.QInputDialog.getText(self, 'Upload','Image URL:',flags=QtCore.Qt.WindowCloseButtonHint)
@@ -433,10 +439,10 @@ class Window(QMainWindow):
     def openHelpDialog(self):
 
         startfile("index\help.html")
+        
 
 def runApp():
 
-    app = QApplication(sys.argv)
     window = Window()
     window.show()
     sys.exit(app.exec())
