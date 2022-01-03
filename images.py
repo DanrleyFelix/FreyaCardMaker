@@ -59,12 +59,15 @@ class Card:
             self.im = Image.open(self.image)
         except (OSError,AttributeError):
             self.im = self.imageLink(self.image)
+            if self.im == False:
+                return False
         # Rating, Rank & attribute
-        self.original_duration = self.im.info['duration']
         cardAttribute = Image.open(f'card attributes//{self.attribute.lower()}.png')
         cardRating = Image.open(f'card rating//{self.rating.count("⭐")} stars.png')
         cardRank = Image.open(f'card ranks//{self.rank.lower()}.png')
         self.gifHandler()
+        if self.totalFrames > 1:
+            self.original_duration = self.im.info['duration']
         for frame in self.imFrames:
             tempBg = self.backgroundCardImage.copy()
             new_img = self.resizeImage(frame)
@@ -83,6 +86,7 @@ class Card:
         else:
             self.dirJson["last_show_image"] = 'temp.png'
         jmanager.updateJson('data//data.json', data=self.dirJson)
+        return True
 
     def gifHandler(self):
 
@@ -92,10 +96,13 @@ class Card:
         self.totalFrames = len(self.imFrames)
 
     def imageLink(self,link):
-
-        url = requests.get(link)
-        self.im = Image.open(BytesIO(url.content))
-        return self.im
+        
+        try:
+            url = requests.get(link)
+            self.im = Image.open(BytesIO(url.content))
+            return self.im
+        except Exception as e:
+            return False
 
     def resizeImage(self,img):
         
@@ -198,6 +205,7 @@ class Card:
         self.kerningFont(160,85,467,f'{self.mp}','Sample text',cardMpFont,draw)
         self.kerningFont(0,166,457,f'{self.race}','Sample text',cardRaceFont,draw)
         desc = self.adjustSizeFont(draw,self.description,cardEffectFont)
+        #print(self.description, desc)
         draw.text((60,409),desc[0],fill='white',font=cardEffectFont)
         draw.text((60,430),desc[1],fill='white',font=cardEffectFont)
 
@@ -224,28 +232,32 @@ class Card:
                 new_txt_list = txt.split()
                 new_txt_list.pop()
                 txt = ' '.join(new_txt_list)
-            if w1_test >= 250 or i == maxLenght-1:
+            if w1_test >= 250 or i >= maxLenght-1:
                 texts.append(txt)
                 txt = ''
                 new_txt_list = text_list[i+1:]
                 maxLenght = len(new_txt_list)
-                for j in range(0, maxLenght):
-                    txt = txt + new_txt_list[j] + ' '
-                    w2_test = draw.textsize(txt,font=font)[0]
-                    if w2_test >= 275:
-                        new_txt_list = txt.split()
-                        new_txt_list.pop()
-                        txt = ' '.join(new_txt_list)
-                        txt = txt.strip()+'...'
-                    if w2_test >= 250 or j == maxLenght-1:
-                        if '.' not in txt:
-                            txt = txt+'.'
-                        texts.append(txt.strip())
-                        return texts
+                if maxLenght == 0:
+                    texts.append('')
+                else:
+                    for j in range(0, maxLenght):
+                        txt = txt + new_txt_list[j] + ' '
+                        w2_test = draw.textsize(txt,font=font)[0]
+                        if w2_test >= 275:
+                            new_txt_list = txt.split()
+                            new_txt_list.pop()
+                            txt = ' '.join(new_txt_list)
+                            txt = txt.strip()+'...'
+                        if w2_test >= 250 or j >= maxLenght-1:
+                            if '.' not in txt:
+                                txt = txt+'.'
+                            texts.append(txt.strip())
+                            return texts
+        return texts
 
     def saveImageTemp(self):
 
-        if len(self.newImFrames) == 1:
+        if self.totalFrames == 1:
             self.newImFrames[0].save('interface//temp.png')
         else:
             # write GIF animation

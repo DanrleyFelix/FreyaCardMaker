@@ -328,12 +328,12 @@ class Window(QMainWindow):
         app.setOverrideCursor(Qt.WaitCursor)
         if response[0]:
             self.dirJson["dir_save_image"] = response[0]
-            try:
-                card = Card()
-                card.uploadImages()
-                card.saveImage(response[0])
-            except:
-                self.show_critical_messagebox()
+            card = Card()
+            uploadState = card.uploadImages()
+            if uploadState == False:
+                return self.show_critical_messagebox()
+            card.saveImage(response[0])
+            self.show_critical_messagebox()
         app.restoreOverrideCursor()
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
@@ -384,14 +384,12 @@ class Window(QMainWindow):
         jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
         app.setOverrideCursor(Qt.WaitCursor)
         if not onlyFile:
-            try:
-                card = Card()
-                card.uploadImages()
-                card.saveImageTemp()
-                self.loadCardLabel()
-            except Exception as e:
-                print(e)
-                self.show_critical_messagebox()
+            card = Card()
+            uploadState = card.uploadImages()
+            if uploadState == False:
+                return self.show_critical_messagebox()
+            card.saveImageTemp()
+            self.loadCardLabel()
         app.restoreOverrideCursor()
 
     def changeModePc(self):

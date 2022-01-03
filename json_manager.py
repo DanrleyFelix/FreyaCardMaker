@@ -26,7 +26,7 @@ dir_2 = {
   "MP": "0",
   "Card Points": "5",
   "ID": "",
-  "Effect/Pack/Description 0": "",
+  "Effect/Pack/Description 0": "Effect: ",
   "Effect/Pack/Description 1": "",
   "Effect/Pack/Description 2": ""
 
@@ -40,12 +40,12 @@ dir_3 = {
     "card_id_size": 20,
     "card_points_font": "FreeSerifBold.ttf",
     "card_points_size": 23,
-    "Card_effect_font": "source-sans-pro.light-italic.ttf",
-    "Card_effect_size": 18,
-    "Card_mp_font": "source-sans-pro.light-italic.ttf",
-    "Card_mp_size": 18,
-    "Card_race_font": "source-sans-pro.light-italic.ttf",
-    "Card_race_size": 15
+    "card_effect_font": "source-sans-pro.italic.ttf",
+    "card_effect_size": 18,
+    "card_mp_font": "source-sans-pro.italic.ttf",
+    "card_mp_size": 18,
+    "card_race_font": "source-sans-pro.italic.ttf",
+    "card_race_size": 15
 
 }
 
