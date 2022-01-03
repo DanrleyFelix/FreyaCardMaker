@@ -8,7 +8,6 @@ from utils import *
 from style import *
 from json_manager import JsonManager
 from os.path import basename
-from os import startfile
 from images import Card
 
 
@@ -331,6 +330,7 @@ class Window(QMainWindow):
             card = Card()
             uploadState = card.uploadImages()
             if uploadState == False:
+                app.restoreOverrideCursor()
                 return self.show_critical_messagebox()
             card.saveImage(response[0])
             self.show_critical_messagebox()
@@ -387,6 +387,7 @@ class Window(QMainWindow):
             card = Card()
             uploadState = card.uploadImages()
             if uploadState == False:
+                app.restoreOverrideCursor()
                 return self.show_critical_messagebox()
             card.saveImageTemp()
             self.loadCardLabel()
@@ -436,7 +437,8 @@ class Window(QMainWindow):
 
     def openHelpDialog(self):
 
-        startfile("index\help.html")
+        #startfile("index\help.html")
+        pass
         
 
 def runApp():
