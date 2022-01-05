@@ -23,9 +23,9 @@
 }
 
 html {
-  background: linear-gradient(270deg, #09090a, #181818);
   color: #ddd;
   scroll-behavior: smooth;
+  background-color: #181818;
 }
 
 * {
