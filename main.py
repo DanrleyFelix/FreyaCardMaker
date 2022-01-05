@@ -391,7 +391,7 @@ class Window(QMainWindow):
                 self.loadCardLabel()
             except Exception as e:
                 msg = str(e)
-                print(msg)
+                app.restoreOverrideCursor()
                 self.show_critical_messagebox(msg=msg)
         app.restoreOverrideCursor()
 
@@ -439,7 +439,11 @@ class Window(QMainWindow):
 
     def openHelpDialog(self):
         
-        opw('file://' + realpath('index/index.html'))
+        try:
+            opw('file://' + realpath('index/index.html'))
+        except Exception as e:
+            msg = str(e)
+            self.show_critical_messagebox(msg=msg)
 
         
 def runApp():
