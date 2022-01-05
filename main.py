@@ -333,14 +333,13 @@ class Window(QMainWindow):
                 app.restoreOverrideCursor()
                 return self.show_critical_messagebox()
             card.saveImage(response[0])
-            self.show_critical_messagebox()
         app.restoreOverrideCursor()
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
-    def show_critical_messagebox(self):
+    def show_critical_messagebox(self,msg='Upload another Image!'):
 
-        msg = QMessageBox()
-        msg.critical(self,'Critical Error','Upload another image.',QMessageBox.Ok) 
+        messageBox = QMessageBox()
+        messageBox.critical(self,'Critical Error',msg,QMessageBox.Ok) 
     
     def show_info_messagebox(self):
 
@@ -385,12 +384,14 @@ class Window(QMainWindow):
         app.setOverrideCursor(Qt.WaitCursor)
         if not onlyFile:
             card = Card()
-            uploadState = card.uploadImages()
-            if uploadState == False:
-                app.restoreOverrideCursor()
-                return self.show_critical_messagebox()
-            card.saveImageTemp()
-            self.loadCardLabel()
+            try:
+                card.uploadImages()
+                card.saveImageTemp()
+                self.loadCardLabel()
+            except Exception as e:
+                msg = str(e)
+                print(msg)
+                self.show_critical_messagebox(msg=msg)
         app.restoreOverrideCursor()
 
     def changeModePc(self):

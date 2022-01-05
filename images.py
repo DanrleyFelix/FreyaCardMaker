@@ -4,7 +4,6 @@ from io import BytesIO
 from json_manager import JsonManager
 from imageio import mimsave
 
-
 jmanager = JsonManager()
 
 
@@ -59,8 +58,6 @@ class Card:
             self.im = Image.open(self.image)
         except (OSError,AttributeError):
             self.im = self.imageLink(self.image)
-            if self.im == False:
-                return False
         # Rating, Rank & attribute
         cardAttribute = Image.open(f'card attributes//{self.attribute.lower()}.png')
         cardRating = Image.open(f'card rating//{self.rating.count("⭐")} stars.png')
@@ -97,12 +94,9 @@ class Card:
 
     def imageLink(self,link):
         
-        try:
-            url = requests.get(link)
-            self.im = Image.open(BytesIO(url.content))
-            return self.im
-        except Exception as e:
-            return False
+        url = requests.get(link)
+        self.im = Image.open(BytesIO(url.content))
+        return self.im
 
     def resizeImage(self,img):
         
@@ -225,17 +219,23 @@ class Card:
         text_list = text.split()
         txt = ''
         maxLenght = len(text_list)
+        popItem = ''
         for i in range(0, maxLenght):
             txt = txt + text_list[i] + ' '
             w1_test = draw.textsize(txt,font=font)[0]
             if w1_test >= 275:
                 new_txt_list = txt.split()
-                new_txt_list.pop()
+                popItem = new_txt_list.pop()
                 txt = ' '.join(new_txt_list)
             if w1_test >= 250 or i >= maxLenght-1:
                 texts.append(txt)
                 txt = ''
-                new_txt_list = text_list[i+1:]
+                try:
+                    new_txt_list = text_list[i+1:]
+                    if len(popItem) > 0:
+                        new_txt_list.insert(0,popItem)
+                except IndexError:
+                    new_txt_list = [popItem]
                 maxLenght = len(new_txt_list)
                 if maxLenght == 0:
                     texts.append('')
@@ -262,7 +262,7 @@ class Card:
         else:
             # write GIF animation
             if int(self.dirJson["high_quality_preview"]) == 1:
-                mimsave('interface//temp.gif',self.newImFrames,fps=1/(self.original_duration/1000),format='gif')
+                mimsave('interface//temp.gif',self.newImFrames,fps=1/(self.original_duration/1000))
             else:
                 self.newImFrames[0].save('interface//temp.gif', save_all=True, optimize=False, 
                     append_images=self.newImFrames[1:], loop=0, duration=self.original_duration)
@@ -274,7 +274,7 @@ class Card:
         else:
             # write GIF animation
             if int(self.dirJson["high_quality_preview"]) == 1:
-                mimsave(dir,self.newImFrames,fps=1/(self.original_duration/1000),format='gif')
+                mimsave(dir,self.newImFrames,fps=1/(self.original_duration/1000))
             else:
                 self.newImFrames[0].save(dir, save_all=True, optimize=False, 
                     append_images=self.newImFrames[1:], loop=0, duration=self.original_duration)
