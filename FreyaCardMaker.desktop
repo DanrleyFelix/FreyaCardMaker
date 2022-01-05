@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=Freya Card Maker
-StartupWMClass=discord
 Comment=App for creating cards for Freya Bot
 GenericName=Card Maker
-Exec=/opt/freyacardmaker/Freya\ Card\ Maker
+Terminal=False
+Exec="/opt/freyacardmaker/Freya Card Maker"
+Path=/opt/freyacardmaker
 Icon=/opt/freyacardmaker/icon.png
 Type=Application
 Categories=Utility;Graphics;
-Path=/usr/bin
