@@ -7,8 +7,9 @@ from PyQt5.QtCore import QRect,Qt
 from utils import *
 from style import *
 from json_manager import JsonManager
-from os.path import basename
+from os.path import basename,realpath
 from images import Card
+from webbrowser import open as opw
 
 
 jmanager = JsonManager()
@@ -437,11 +438,10 @@ class Window(QMainWindow):
             jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
 
     def openHelpDialog(self):
-
-        #startfile("index\help.html")
-        pass
         
+        opw('file://' + realpath('index/index.html'))
 
+        
 def runApp():
 
     window = Window()
