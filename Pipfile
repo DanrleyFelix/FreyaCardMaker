@@ -15,7 +15,7 @@ pyinstaller = "*"
 [scripts]
 start = "python ./main.py"
 build-windows = "pyinstaller --noconsole --name=\"Freya Card Maker\" --icon=\"icon.ico\" --add-data=\"icon.ico;.\" --onefile main.py"
-build-linux = "pyinstaller --noconsole --name=\"Freya Card Maker\" --icon=\"icon.ico\" --onefile main.py"
+build-linux = "pyinstaller --noconsole --name=\"Freya Card Maker\" --icon=\"icon.ico\" --onefile main.py && cp -r 'card attributes' data FreyaCardMaker.desktop index 'card backgrounds' design.qss icon.png interface 'card ranks' fonts icons presets 'card rating' images dist/"
 
 [requires]
 python_version = "3.8"

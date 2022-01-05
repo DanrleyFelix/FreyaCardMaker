@@ -1,9 +1,8 @@
 start:
-	pipenv run python ./main.py
+	pipenv run start
 
 build-windows:
-	pipenv run pyinstaller --noconsole --name="Freya Card Maker" --icon="icon.ico" --add-data="icon.ico;." --onefile main.py
+	pipenv run build-windows
 
 build-linux:
-	pipenv run pyinstaller --noconsole --name="Freya Card Maker" --icon="icon.ico" --onefile main.py
-
+	pipenv run build-linux
