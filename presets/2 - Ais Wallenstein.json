@@ -1,0 +1,15 @@
+{
+  "Name": "Ais Wallenstein",
+  "Attribute": "Wind",
+  "Race/Class": "Human",
+  "Rating": "\u2b50\u2b50\u2b50\u2b50\u2b50",
+  "Rank": "S+",
+  "Image": "https://i.pinimg.com/originals/4d/7a/62/4d7a626aec5db335a884861396ba1036.gif",
+  "Background": "forest-sky 1.png",
+  "MP": "80",
+  "Card Points": "130",
+  "ID": "2",
+  "Effect/Pack/Description 0": "Effect: ",
+  "Effect/Pack/Description 1": "Add 3 rare boxes when you are using daily.",
+  "Effect/Pack/Description 2": ""
+}

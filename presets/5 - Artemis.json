@@ -1,0 +1,15 @@
+{
+  "Name": "Artemis",
+  "Attribute": "Wind",
+  "Race/Class": "Goddess",
+  "Rating": "\u2b50\u2b50\u2b50\u2b50\u2b50",
+  "Rank": "S+",
+  "Image": "https://cdn.discordapp.com/attachments/684216222619140160/928502015179509800/artemis.gif",
+  "Background": "blue-forest 2.png",
+  "MP": "120",
+  "Card Points": "125",
+  "ID": "5",
+  "Effect/Pack/Description 0": "Effect: ",
+  "Effect/Pack/Description 1": "Double the prize for each box.",
+  "Effect/Pack/Description 2": ""
+}
