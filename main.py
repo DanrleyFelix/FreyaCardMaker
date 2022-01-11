@@ -284,7 +284,7 @@ class Window(QMainWindow):
         if response[0]:
             self.dirJson["dir_save_file"] = response[0]
             self.savePreset(self.box_list,onlyFile=True)
-            jmanager.createJson(response[0], self.lastEditionJson)
+            jmanager.createJson(response[0], self.lastEditionJson, forceCreate=True)
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def loadImage(self):
