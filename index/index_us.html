@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" contendevice-widtht="IE=edge">
+  <meta name="viewport" content="width=, initial-scale=1.0">
+  <title>Freya Card Maker: User Manual</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="headerWrapper" class="headerWrapper">
+    <img class="headerLogo" draggable="false" src="./img/freyalogo.png" />
+    <h2 class="headerTitle">
+      <span>Card</span>Maker
+    </h2>
+    <button class="headerDiscordButton" onclick="window.open('https://discord.gg/xYhSWVn', '_blank')">
+      <img draggable="false" src="./img/discord_logo.png" alt="discord" />
+      <img draggable="false" src="./img/discord_logo_name.png" alt="discord" />
+    </button>
+  </div>
+  <div class="mainDiv col">
+    <h1>User Manual</h1>
+    <a id="acceptCard" class="topicTitle" href="#acceptCard">I - The card must be done as following to be accepted.<img class="pin" src="./img/pin.svg" draggable="false"/></a>
+    <ol class="col indentPlus" style="row-gap: 20px; margin-bottom: 60px;">
+      <li>
+        <p>Enter the name of the card. The maximum number of characters is 20.</p>
+      </li>
+      <li>
+        <p>Select the attribute. The same one can apply to both the personality and attack forms of the character you are using as a base.</p>
+      </li>
+      <li>
+        <p>Select or enter the character's class, race or type.</p>
+      </li>
+      <li>
+        <p style="margin-bottom: 10px;">Rate the card between <b>1 to 5</b> stars.</p>
+        <ul class="col indent">
+          <li>
+            <p class="starContainer">
+              <img class="star" src="./img/star.svg" draggable="false" />
+              - Rank D- to D+
+            </p>
+          </li>
+          <li>
+            <p class="starContainer">
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              - Rank C- to C+
+            </p>
+          </li>
+          <li>
+            <p class="starContainer">
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              - Rank B- to B+
+            </p>
+          </li>
+          <li>
+            <p class="starContainer">
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              - Rank A- to S-
+            </p>
+          </li>
+          <li>
+            <p class="starContainer">
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              <img class="star" src="./img/star.svg" draggable="false" />
+              - Rank S+ to R+
+            </p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p style="margin-bottom: 10px;">Enter the rank. The same one is based on the card points.</p>
+        <div class="four-grid indent">
+          <p><b>D-</b>: 5 to 10</p>
+          <p><b>D+</b>: 15 to 20</p>
+          <p><b>C-</b>: 20 to 30</p>
+          <p><b>C+</b>: 30 to 45</p>
+          <p><b>B-</b>: 45 to 60</p>
+          <p><b>B+</b>: 60 to 75</p>
+          <p><b>A-</b>: 80 to 95</p>
+          <p><b>A+</b>: 95 to 110</p>
+          <p><b>S-</b>: 110 to 125</p>
+          <p><b>S+</b>: 125 to 155</p>
+          <p><b>R-</b>: 160 to 175</p>
+          <p><b>R+</b>: 180 to 200</p>
+        </div>
+      </li>
+      <li>
+        <p>
+            Upload the image via a <b>link</b> or <b>directory</b>.
+            To select the link option just click on
+            <b>Config</b> and select the <b>Upload image from web</b> option (the internet must be <b>connected</b>).
+            If the image is on your computer, click on the <b>Upload image from PC</b> option.
+        </p>
+      </li>
+      <li>
+        <p>
+            Select the <b>background</b>. Use one that has the appropriate colors for the base image (character).
+            If you want to add a new background in the <b>card backgrounds</b> folder, pay attention to the dimensions of the card (520x370)
+            and the format (.png).
+        </p>
+      </li>
+      <li>
+        <p>
+            Select the <b>MP</b> that will be consumed when using the card's effect. Cards with no effect MP must be set to 0.
+            Low rank effects usually consume 0 to 75 MP,
+            cards with medium effect consume from 30 to 125 and those ones with high rank can range from 0 to 300. </p>
+      </li>
+      <li>
+        <p>
+            Select the card points. Pay attention to items <b>4</b> and <b>5</b> to score the card.
+        </p>
+      </li>
+      <li>
+        <p>
+            Select the <b>ID</b>. Do not use ID's from cards that already exist. To find out which cards are already in our system,
+            just look at the end of freya's card list using the <b>-cards</b> command. </p>
+      </li>
+      <li>
+        <p>
+            Below the card's preview you must select what will be put in the written part of the card. Whether 
+            it's a simple description, or whether it's going to inform the package or part of the effect. 
+            You can only choose one of these options. After choosing, fill in the text boxes with the necessary information in <b>english</b>. </p>
+      </li>
+    </ol>
+    <a id="savingPreset" class="topicTitle" href="#savingPreset">II - Saving the preset and the image:<img class="pin" src="./img/pin.svg" draggable="false"/></a>
+    <ol class="col indentPlus" style="row-gap: 20px;margin-bottom: 60px;">
+      <li>
+        <p>
+            To save the preset press <b>Ctrl + S</b> or go to <b>File</b> and then click <b>Save</b>. And to save the image
+            press <b>Ctrl+G</b> or click on <b>Generate card</b>.
+        </p>
+      </li>
+      <li>
+        <p>
+            To load a preset press <b>Ctrl + O</b> or go to <b>File</b> and then click <b>Load</b>. 
+            A preset is a file that has all the information needed for a specific card. It is always 
+            recommended to save presets for future modifications.
+        </p>
+      </li>
+      <li>
+        <p>
+            To generate high quality gifs press <b>Ctrl + K</b> or go to <b>Config</b> and click on <b>High quality gif</b>. 
+            This option does not mean that all gifs will come in the ideal quality, as some gifs may be a little dark. 
+            To choose the other option press <b>Ctrl + L</b> or go to <b>Config</b> and click on <b>Low quality gif</b>. 
+            This option, in addition to being faster to load or save the file, 
+            also makes the colors closer to ideal. Each gif can have its ideal option. </p>
+      </li>
+    </ol>
+    <a id="Effects" class="topicTitle" href="#Effects">III - Effects that can be added:<img class="pin" src="./img/pin.svg" draggable="false"/></a>
+    <ol class="col indentPlus" style="row-gap: 20px; margin-bottom: 60px;">
+      <li>
+        <p>
+          Add and remove items <b>directly</b> or <b>conditionally</b>. Conditions can be: 
+          receive or give reps, use daily or MP potions and complete global quests.
+        </p>
+      </li>
+      <li>
+        <p>
+          Increase <i><b>rates</b></i> of xp, coins, orbs, asgards in common, rare or ultra boxes.
+        </p>
+      </li>
+      <li>
+        <p>
+          Temporary effects that increase the <i><b>rate</b></i> of your xp or orbs in text or voice chats.
+        </p>
+      </li>
+      <li>
+        <p>
+          Temporary effects that improve your gambling luck.
+        </p>
+      </li>
+      <li>
+        <p>
+          Add items when opening any box. It can be anything available on Freya's
+           system, but banners are exceptions. Examples: Card packs, Asgard, coins, orbs etc.
+        </p>
+      </li>
+      <li>
+        <p>
+          Clone or sacrifice some cards to generate others of specific ranks.
+        </p>
+      </li>
+      <li>
+        <p>
+          Regenerate or increase (temporary) the mp.
+        </p>
+      </li>
+      <li>
+        <p>
+          Copy the effect of other cards with specific scores or rankings.
+        </p>
+      </li>
+      <li>
+        <p>
+          Force a draw for a specific box on the daily.
+        </p>
+      </li>
+      <li>
+        <p>
+          Cancel the cooldown when using other cards (Example: <b>0027 - Riveria</b>)
+        </p>
+      </li>
+    </ol>
+    <a id="EffectsCriteria" class="topicTitle" href="#EffectsCriteria">IV - Criteria for the effects:<img class="pin" src="./img/pin.svg" draggable="false"/></a>
+    <ol class="col indentPlus" style="row-gap: 20px; margin-bottom: 60px;">
+      <li>
+        <p>
+          A simple reference to the anime. Example: Copying effects from other cards (<b>0115 - Shirou Emiya</b>). It will not always be
+          possible to make these references.
+        </p>
+      </li>
+      <li>
+        <p>
+          Be careful when creating <b>"overpower"</b> effects. An example would be an A+ Rank card giving something equivalent to 1 asgard,
+           50 Orbs or 1 ultra box every 8 hours. To find out if something is overpower or not, just look at the cards that already exist
+            in our system. For a bigger sense of reasonable effects: Rank A+: Add 2 rareboxes, Rank S+: Add 1 ultra box and 2 Rep,
+             Rank R+: Add 4 ultra boxes. Remember that these are just simple examples, as each of these effects depend on different
+              conditions, cooldown and mana consumption. No card can have an effect that can generate another R+ Rank.
+        </p>
+      </li>
+      <li>
+        <p>
+          The card's score or ranking is a crucial factor in determining how the card will effect.
+        </p>
+      </li>
+    </ol>
+    <a id="PointsCriteria" class="topicTitle" href="#PointsCriteria">V - Criteria for scoring the card (0 to 200):<img class="pin" src="./img/pin.svg" draggable="false"/></a>
+    <ol class="col indentPlus" style="row-gap: 20px; margin-bottom: 60px;">
+      <li>
+        <p>
+          Overall character popularity (OCP). Example: Artoria - Saber = 160
+        </p>
+      </li>
+      <li>
+        <p>
+          Character's popularity in the anime universe fandom (CPA). Example: Artoria - Saber 200
+        </p>
+      </li>
+      <li>
+        <p>
+          Overall character relevance in the anime (OCR). Example: Artoria - Saber = 190
+        </p>
+      </li>
+      <li>
+        <p>
+          Skill level compared to other characters in the anime (SL): Example: Artoria - Saber = 195
+        </p>
+      </li>
+      <p>
+        Card points = 0.45 x OCP + 0.30 x CPA + 0.15 x OCR + 0.10 x SL = 180 (Artoria - Saber)
+      </p>
+  </div>
+  <footer>
+    <p><span>Danrley Santos (DaN):</span>App & Design</p>
+    <p><span>Rayan Santos (Hideki):</span>User Manual</p>
+    <p><span>Aslan Carlos (DarlaN):</span>Designer</p>
+  </footer>
+  <script>
+    const headerWrapper = document.getElementById('headerWrapper');
+    window.addEventListener(
+      'scroll',
+      () => headerWrapper.style = window.scrollY !== 0 ? "box-shadow: 0 6px 15px #0000; opacity: 0.8;" : ""
+    )
+  </script>
+</body>
+</html>

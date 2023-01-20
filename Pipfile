@@ -12,5 +12,10 @@ imageio = "*"
 [dev-packages]
 pyinstaller = "*"
 
+[scripts]
+start = "python ./main.py"
+build-windows = "pyinstaller --noconsole --name=\"Freya Card Maker\" --icon=\"icon.ico\" --add-data=\"icon.ico;.\" --onefile main.py"
+build-linux = "pyinstaller --noconsole --name=\"Freya Card Maker\" --icon=\"icon.ico\" --onefile main.py"
+
 [requires]
 python_version = "3.8"

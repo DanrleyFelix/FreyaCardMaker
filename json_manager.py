@@ -52,9 +52,9 @@ dir_3 = {
 
 class JsonManager:
 
-    def createJson(self, filepath, data):
+    def createJson(self, filepath, data, forceCreate=False):
 
-        if not isfile(filepath):
+        if not isfile(filepath) or forceCreate:
             with open(filepath,'w') as f:
                 dump(data,f,indent=2,separators=(',',': '))
 

@@ -18,7 +18,7 @@ class Card:
         self.totalFrames = 0
         self.newImFrames = []
         # Inicializando os parâmetros da carta
-        self.name = cardDict['Name'][:20]
+        self.name = cardDict['Name'][:21]
         self.attribute = cardDict['Attribute']
         self.race = cardDict['Race/Class'][:10]
         self.rating = cardDict['Rating']
