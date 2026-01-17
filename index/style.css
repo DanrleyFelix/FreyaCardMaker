@@ -23,9 +23,9 @@
 }
 
 html {
-  background: linear-gradient(270deg, #09090a, #181818);
   color: #ddd;
   scroll-behavior: smooth;
+  background-color: #181818;
 }
 
 * {
@@ -142,6 +142,7 @@ a.topicTitle {
   margin-bottom: 25px;
   color: inherit;
   text-decoration: none;
+  font-size: 20px;
   outline: none;
 }
 

@@ -1,4 +1,6 @@
 dist/
+build/
 __pycache__/
 .qt_for_python/
 card maker.code-workspace
+Freya Card Maker.spec

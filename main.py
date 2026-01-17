@@ -188,11 +188,13 @@ class Window(QMainWindow):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         configMenu = menubar.addMenu('&Config')
+        helpMenuBar = menubar.addMenu('Help')
 
         loadAction = QtWidgets.QAction(QtGui.QIcon('icons//load.png'),'&Load', self)
         saveAction = QtWidgets.QAction(QtGui.QIcon('icons//save.png'),'&Save', self)
         generateAction = QtWidgets.QAction('&Generate card', self)
-        helpAction = QtWidgets.QAction('&Help', self)
+        helpActionUS = QtWidgets.QAction(QtGui.QIcon('icons//us.png'),'&EN-US', self)
+        helpActionBR = QtWidgets.QAction(QtGui.QIcon('icons//brazil.png'),'&PT-BR', self)
         self.fileFromPC = QtWidgets.QAction('&Upload image from PC', self)
         self.fileFromWeb = QtWidgets.QAction('&Upload image from Web', self)
         self.showImageLow = QtWidgets.QAction('&Low quality gif', self)
@@ -209,7 +211,6 @@ class Window(QMainWindow):
         loadAction.setShortcut('Ctrl+O')
         saveAction.setShortcut('Ctrl+S')
         generateAction.setShortcut('Ctrl+G')
-        helpAction.setShortcut('Ctrl+H')
         self.fileFromPC.setShortcut('Ctrl+P')
         self.fileFromWeb.setShortcut('Ctrl+W')
         self.showImageLow.setShortcut('Ctrl+L')
@@ -218,7 +219,8 @@ class Window(QMainWindow):
         fileMenu.addAction(saveAction)
         fileMenu.addAction(loadAction)
         menubar.addAction(generateAction)
-        menubar.addAction(helpAction)
+        helpMenuBar.addAction(helpActionBR)
+        helpMenuBar.addAction(helpActionUS)
         configMenu.addAction(self.fileFromPC)
         configMenu.addAction(self.fileFromWeb)
         configMenu.addAction(self.onlySpace)
@@ -227,8 +229,9 @@ class Window(QMainWindow):
 
         loadAction.triggered.connect(self.loadFile)
         saveAction.triggered.connect(self.saveFile)
-        helpAction.triggered.connect(self.openHelpDialog)
         generateAction.triggered.connect(self.saveImage)
+        helpActionUS.triggered.connect(self.openHelpDialogUS)
+        helpActionBR.triggered.connect(self.openHelpDialogBR)
         self.fileFromWeb.triggered.connect(self.changeModeWeb)
         self.fileFromPC.triggered.connect(self.changeModePc)
         self.showImageLow.triggered.connect(self.changeModeLow)
@@ -281,7 +284,7 @@ class Window(QMainWindow):
         if response[0]:
             self.dirJson["dir_save_file"] = response[0]
             self.savePreset(self.box_list,onlyFile=True)
-            jmanager.createJson(response[0], self.lastEditionJson)
+            jmanager.createJson(response[0], self.lastEditionJson, forceCreate=True)
         jmanager.updateJson('data//data.json', data=self.dirJson)
 
     def loadImage(self):
@@ -391,7 +394,7 @@ class Window(QMainWindow):
                 self.loadCardLabel()
             except Exception as e:
                 msg = str(e)
-                print(msg)
+                app.restoreOverrideCursor()
                 self.show_critical_messagebox(msg=msg)
         app.restoreOverrideCursor()
 
@@ -437,9 +440,21 @@ class Window(QMainWindow):
             self.lastEditionJson['Image'] = self.imageDir
             jmanager.updateJson('presets//last_edition.json', self.lastEditionJson)
 
-    def openHelpDialog(self):
+    def openHelpDialogBR(self):
         
-        opw('file://' + realpath('index/index.html'))
+        try:
+            opw('file://' + realpath('index/index.html'))
+        except Exception as e:
+            msg = str(e)
+            self.show_critical_messagebox(msg=msg)
+
+    def openHelpDialogUS(self):
+        
+        try:
+            opw('file://' + realpath('index/index_us.html'))
+        except Exception as e:
+            msg = str(e)
+            self.show_critical_messagebox(msg=msg)
 
         
 def runApp():
